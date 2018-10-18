@@ -14,17 +14,25 @@ extension SeoulBusAPI {
     enum Station: String {
         
         ///정류소 명칭 검색
-        case getStationByNameList = "getStationByName"
+        case searchByName = "getStationByName"
         
+        ///URL host
+        func host() -> String {
+            let seoulStationURL = "http://ws.bus.go.kr"
+            
+            return seoulStationURL
+        }
+        
+        ///URL api path
         func path() -> String {
             let apiPath = "/api/rest/stationinfo/\(self.rawValue)"
             
             return apiPath
         }
         
+        ///절대경로
         func absoluteURL() -> String {
-            let seoulStationURL = "http://ws.bus.go.kr"
-            let url = seoulStationURL + path()
+            let url = host() + path()
             
             return url
         }
@@ -41,7 +49,7 @@ struct SeoulBusAPI {
   
     ///정류소 명칭 검색
     static func station(byName searchKeyword: String, handler: ((SeoulBus?) -> Void)? = nil) {
-        let stationByName: SeoulBusAPI.Station = .getStationByNameList
+        let stationByName = SeoulBusAPI.Station.searchByName
         let requestURL = stationByName.absoluteURL()
         
         ///공공데이터 key는 인코딩 되어 있기 때문에 디코딩한다.
@@ -66,7 +74,7 @@ struct SeoulBusAPI {
                     seoulBus = SeoulBus(data: result)
                     
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(error.localizedDescription, error)
                 }
         }
         
